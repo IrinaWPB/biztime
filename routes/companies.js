@@ -21,15 +21,21 @@ router.get('/:code', async (req, res, next) => {
         if (results.rows.length === 0) {
             throw new ExpressError(`Can not find code ${code}`, 404)
         }
+     
         const company = results.rows[0]
+        
         const invoices_data = await db.query(`SELECT * FROM invoices WHERE comp_code=$1`, [code])
+       
         const industries = await db.query(`
             SELECT i.industry FROM industries AS i
             INNER JOIN companies_industries AS ic 
             ON i.code = ic.ind_code
             WHERE ic.comp_code=$1`, [code])
+        
         company.invoices = invoices_data.rows
+       
         company.industries = industries.rows.map(r => r.industry)
+        
         return res.json({ company })
     } catch(err) {
         return next(err)

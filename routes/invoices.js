@@ -22,7 +22,7 @@ router.get('/:id', async (req, res, next) => {
         const company_data = await db.query(`SELECT * FROM companies WHERE code=$1`, [results.rows[0].comp_code])
         const company = company_data.rows
         const { amt, paid, add_date, paid_date } = results.rows[0]
-        return res.json({ invoice: { id, amt, paid, add_date, paid_date, company}})
+        return res.send({ invoice: { id, amt, paid, add_date, paid_date, company}})
     } catch(err) {
         return next(err)
     }
@@ -32,7 +32,7 @@ router.post('/', async(req, res, next) => {
     try {
         const { comp_code, amt } = req.body
         const results = await db.query(`INSERT INTO invoices (comp_code, amt) VALUES($1, $2) RETURNING id, comp_code, amt, paid, add_date, paid_date`, [comp_code, amt])
-        return res.status(201).json({ company: results.rows[0]})
+        return res.status(201).json({ invoice: results.rows[0]})
     } catch(err) {
         return next(err)
     }

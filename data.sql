@@ -1,5 +1,4 @@
-\c biztime_test;
-
+\c biztime_test
 DROP TABLE IF EXISTS invoices;
 DROP TABLE IF EXISTS companies;
 
@@ -18,4 +17,16 @@ CREATE TABLE invoices (
     paid_date date,
     CONSTRAINT invoices_amt_check CHECK ((amt > (0)::double precision))
 );
+
+CREATE TABLE industries (
+    code text PRIMARY KEY,
+    industry text NOT NULL UNIQUE
+);
+
+CREATE TABLE companies_industries (
+    ind_code text NOT NULL REFERENCES industries,
+    comp_code text NOT NULL REFERENCES companies
+);
+
+
 
